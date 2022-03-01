@@ -1,49 +1,19 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Map, { Marker, Popup } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 import StarIcon from "@mui/icons-material/Star";
-import styled from "styled-components";
+import RoomIcon from "@mui/icons-material/Room";
+import "./app.css";
 import axios from "axios";
+import { format } from "timeago.js";
 
 const RACT_APP_MAPBOX =
   "pk.eyJ1Ijoiam9yZGlyb2NhOTQiLCJhIjoiY2wwNnp0ZTZ1MDFpZTNrcDYzanhod2VnbSJ9.4qhWWAscO01UzSdinUba1Q";
 
-//STYLED COMPONENTS:
-
-const LabelContainer = styled.div`
-  width: 200px;
-  height: 250px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-`;
-const Label = styled.label`
-  width: max-content;
-  color: #00007d;
-  font-size: 13px;
-  border-bottom: 0.5px solid #00007d;
-  margin: 3px 0;
-`;
-const Place = styled.h3`
-  font-weight: 900;
-`;
-const Review = styled.p`
-  font-size: 14px;
-`;
-const Rating = styled.div`
-  color: gold;
-`;
-
-const CreatedBy = styled.span`
-  font-size: 14px;
-`;
-const Date = styled.span`
-  font-size: 14px;
-`;
-
-function App() {
+const App = () => {
+  //with previous versions would have viewport, (not needed with initialViewState)
   const [pins, setPins] = useState([]);
+  const [currentPlaceId, setCurrentPlaceId] = useState(null);
+  const currentUser = "jordi"
 
   useEffect(() => {
     const getPins = async () => {
@@ -57,45 +27,63 @@ function App() {
     getPins();
   }, []);
 
+  const handleMarkerClick = (id) => {
+    setCurrentPlaceId(id);
+  };
+
   return (
     <Map
       initialViewState={{
-        latitude: 45,
-        longitude: 16,
+        latitude: 46,
+        longitude: 15,
         zoom: 4,
       }}
       style={{ width: "100vw", height: "100vh" }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
+      //viewport not needed because we are using the new version of Map
       mapboxAccessToken={RACT_APP_MAPBOX}
     >
-      {pins.map((el) => (
+      {pins.map((p) => (
         <>
-          <Marker longitude={el.long} latitude={el.lat} color="#00007d" />
-          {/* <Popup longitude={12.492373} latitude={41.890251} anchor="left">
-      <LabelContainer>
-        <Label>Place</Label>
-        <Place>Roman Coliseum</Place>
-        <Label>Review</Label>
-        <Review>It was very nice</Review>
-        <Label>Rating</Label>
-        <Rating>
-          <StarIcon/>
-          <StarIcon/>
-          <StarIcon/>
-          <StarIcon/>
-          <StarIcon/>
-        </Rating>
-        <Label>Information</Label>
-        <CreatedBy>Created by Jordi</CreatedBy>
-        <Date>1 hour Ago</Date>
-      </LabelContainer>
+          <Marker longitude={p.long} latitude={p.lat} anchor="left">
+            <RoomIcon
+              style={{ fontSize: 30, color: p.username===currentUser ?"red": "darkblue", cursor:"pointer" }}
+              onClick={() => handleMarkerClick(p._id)}
+            />
+          </Marker>
 
-      </Popup>
-       */}
+          {p._id === currentPlaceId && (
+            <Popup
+              longitude={p.long}
+              latitude={p.lat}
+              anchor="left"
+              closeButton={true}
+              closeOnClick={false}
+              onClose={()=>setCurrentPlaceId(null)}
+            >
+              <div className="card">
+                <label>Place</label>
+                <h4 className="place">{p.title}</h4>
+                <label>Review</label>
+                <p className="desc">{p.desc}</p>
+                <label>Rating</label>
+                <div className="stars">
+                  <StarIcon className="star" />
+                  <StarIcon className="star" />
+                  <StarIcon className="star" />
+                  <StarIcon className="star" />
+                  <StarIcon className="star" />
+                </div>
+                <label>Information</label>
+                <span className="username">Created by {p.username}</span>
+                <span className="date">{format(p.createdAt)}</span>
+              </div>
+            </Popup>
+          )}
         </>
       ))}
     </Map>
   );
-}
+};
 
 export default App;
