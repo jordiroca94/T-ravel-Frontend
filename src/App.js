@@ -13,7 +13,8 @@ const App = () => {
   //with previous versions would have viewport, (not needed with initialViewState)
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
-  const currentUser = "jordi"
+  const [newPlace, setNewPlace] = useState(null);
+  const currentUser = "jordi";
 
   useEffect(() => {
     const getPins = async () => {
@@ -31,6 +32,13 @@ const App = () => {
     setCurrentPlaceId(id);
   };
 
+  const handleAddClick = (e) => {
+    setNewPlace({
+      lat: e.lngLat.lat,
+      long: e.lngLat.lng,
+    });
+  };
+
   return (
     <Map
       initialViewState={{
@@ -42,12 +50,17 @@ const App = () => {
       mapStyle="mapbox://styles/mapbox/streets-v9"
       //viewport not needed because we are using the new version of Map
       mapboxAccessToken={RACT_APP_MAPBOX}
+      onDblClick={handleAddClick}
     >
       {pins.map((p) => (
         <>
           <Marker longitude={p.long} latitude={p.lat} anchor="left">
             <RoomIcon
-              style={{ fontSize: 30, color: p.username===currentUser ?"red": "darkblue", cursor:"pointer" }}
+              style={{
+                fontSize: 30,
+                color: p.username === currentUser ? "red" : "darkblue",
+                cursor: "pointer",
+              }}
               onClick={() => handleMarkerClick(p._id)}
             />
           </Marker>
@@ -59,7 +72,7 @@ const App = () => {
               anchor="left"
               closeButton={true}
               closeOnClick={false}
-              onClose={()=>setCurrentPlaceId(null)}
+              onClose={() => setCurrentPlaceId(null)}
             >
               <div className="card">
                 <label>Place</label>
@@ -82,6 +95,38 @@ const App = () => {
           )}
         </>
       ))}
+      {newPlace && (
+        <Popup
+          longitude={newPlace.long}
+          latitude={newPlace.lat}
+          anchor="left"
+          closeButton={true}
+          closeOnClick={false}
+          onClose={() => setNewPlace(null)}
+        >
+          <div>
+            <form>
+              <label>Title</label>
+              <input placeholder="Where are you?"></input>
+              <label>Review</label>
+              <textarea placeholder="How was it?"></textarea>
+              <label>Rating</label>
+              <select>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+
+              <button className="submitButton" type="submit">
+                {" "}
+                Add Pin
+              </button>
+            </form>
+          </div>
+        </Popup>
+      )}
     </Map>
   );
 };
