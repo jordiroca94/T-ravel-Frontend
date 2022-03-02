@@ -54,6 +54,6 @@ input::placeholder,textarea::placeholder{
     padding:5px; 
     border-radius:5px; 
     color:white; 
-    background-color:rgb(44, 118, 228)
+    background-color:rgb(44, 118, 228);
     cursor:pointer;
 }
