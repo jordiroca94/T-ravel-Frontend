@@ -1,59 +1,60 @@
-.card{
-    width:250px;
-    height:250px; 
-    display:flex; 
-    flex-direction:column; 
-    justify-content:space-around;
+.card {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-label{
-    color:hsl(240, 85%, 37%); 
-    width:max-content;
-    font-size:13px; 
-    border-bottom:.5px solid blue;
-    margin:3px O;
+label {
+  color: hsl(240, 85%, 37%);
+  width: max-content;
+  font-size: 13px;
+  border-bottom: 0.5px solid blue;
+  margin: 3px O;
 }
 
-.desc{
-    font-size:14px;
+.desc {
+  font-size: 14px;
 }
 
-.star{
-    color:gold;
+.star {
+  color: gold;
 }
 
-.username{
-    font-size:14px;
+.username {
+  font-size: 14px;
 }
 
-.date{
-    font-size:14px;
+.date {
+  font-size: 14px;
 }
 
-form{
-    width:250px; 
-    height:250px; 
-    display:flex; 
-    flex-direction:column; 
-    justify-content:space-between; 
-
+form {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-input,textarea{
-    border:none;
-    border-bottom:1px solid gray;
+input,
+textarea {
+  border: none;
+  border-bottom: 1px solid gray;
 }
 
-input::placeholder,textarea::placeholder{
-    font-size: 12px; 
-    color:gray;
+input::placeholder,
+textarea::placeholder {
+  font-size: 12px;
+  color: gray;
 }
 
-.submitButton{
-    border:none; 
-    padding:5px; 
-    border-radius:5px; 
-    color:white; 
-    background-color:rgb(44, 118, 228);
-    cursor:pointer;
+.submitButton {
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: rgb(44, 118, 228);
+  cursor: pointer;
 }

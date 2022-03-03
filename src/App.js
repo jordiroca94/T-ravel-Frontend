@@ -14,6 +14,12 @@ const App = () => {
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
+
+  //Form Hooks:
+  const [title, setTitle] = useState(null);
+  const [desc, setDesc] = useState(null);
+  const [rating, setRating] = useState(0);
+
   const currentUser = "jordi";
 
   useEffect(() => {
@@ -38,6 +44,25 @@ const App = () => {
       long: e.lngLat.lng,
     });
   };
+
+  const handleSubmit = async(e)=>{
+    e.preventDefault()
+    const newPin = {
+      username: currentUser,
+      title,
+      desc,
+      rating,
+      lat: newPlace.lat,
+      long: newPlace.long,
+    }
+    try{
+      const res = await axios.post("/pins",newPin)
+      setPins([...pins, res.data])
+      setNewPlace(null)
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <Map
@@ -81,11 +106,8 @@ const App = () => {
                 <p className="desc">{p.desc}</p>
                 <label>Rating</label>
                 <div className="stars">
-                  <StarIcon className="star" />
-                  <StarIcon className="star" />
-                  <StarIcon className="star" />
-                  <StarIcon className="star" />
-                  <StarIcon className="star" />
+                 {Array(p.rating).fill( <StarIcon className="star" />)}
+                
                 </div>
                 <label>Information</label>
                 <span className="username">Created by {p.username}</span>
@@ -105,22 +127,20 @@ const App = () => {
           onClose={() => setNewPlace(null)}
         >
           <div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <label>Title</label>
-              <input placeholder="Where are you?"></input>
+              <input placeholder="Where are you?" onChange={(e)=>setTitle(e.target.value)}></input>
               <label>Review</label>
-              <textarea placeholder="How was it?"></textarea>
+              <textarea placeholder="How was it?" onChange={(e)=>setDesc(e.target.value)}></textarea>
               <label>Rating</label>
-              <select>
+              <select onChange={(e)=>setRating(e.target.value)}>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
               </select>
-
               <button className="submitButton" type="submit">
-                {" "}
                 Add Pin
               </button>
             </form>
