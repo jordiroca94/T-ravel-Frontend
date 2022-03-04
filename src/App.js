@@ -45,8 +45,8 @@ const App = () => {
     });
   };
 
-  const handleSubmit = async(e)=>{
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newPin = {
       username: currentUser,
       title,
@@ -54,100 +54,115 @@ const App = () => {
       rating,
       lat: newPlace.lat,
       long: newPlace.long,
+    };
+    try {
+      const res = await axios.post("/pins", newPin);
+      setPins([...pins, res.data]);
+      setNewPlace(null);
+    } catch (err) {
+      console.log(err);
     }
-    try{
-      const res = await axios.post("/pins",newPin)
-      setPins([...pins, res.data])
-      setNewPlace(null)
-    }catch(err){
-      console.log(err)
-    }
-  }
+  };
 
   return (
-    <Map
-      initialViewState={{
-        latitude: 46,
-        longitude: 15,
-        zoom: 4,
-      }}
-      style={{ width: "100vw", height: "100vh" }}
-      mapStyle="mapbox://styles/mapbox/streets-v9"
-      //viewport not needed because we are using the new version of Map
-      mapboxAccessToken={RACT_APP_MAPBOX}
-      onDblClick={handleAddClick}
-    >
-      {pins.map((p) => (
-        <>
-          <Marker longitude={p.long} latitude={p.lat} anchor="left">
-            <RoomIcon
-              style={{
-                fontSize: 30,
-                color: p.username === currentUser ? "red" : "darkblue",
-                cursor: "pointer",
-              }}
-              onClick={() => handleMarkerClick(p._id)}
-            />
-          </Marker>
+    <div>
+      <Map
+        initialViewState={{
+          latitude: 46,
+          longitude: 15,
+          zoom: 4,
+        }}
+        style={{ width: "100vw", height: "100vh" }}
+        mapStyle="mapbox://styles/mapbox/streets-v9"
+        //viewport not needed because we are using the new version of Map
+        mapboxAccessToken={RACT_APP_MAPBOX}
+        onDblClick={handleAddClick}
+      >
+        {pins.map((p) => (
+          <>
+            <Marker longitude={p.long} latitude={p.lat} anchor="left">
+              <RoomIcon
+                style={{
+                  fontSize: 30,
+                  color: p.username === currentUser ? "red" : "darkblue",
+                  cursor: "pointer",
+                }}
+                onClick={() => handleMarkerClick(p._id)}
+              />
+            </Marker>
 
-          {p._id === currentPlaceId && (
-            <Popup
-              longitude={p.long}
-              latitude={p.lat}
-              anchor="left"
-              closeButton={true}
-              closeOnClick={false}
-              onClose={() => setCurrentPlaceId(null)}
-            >
-              <div className="card">
-                <label>Place</label>
-                <h4 className="place">{p.title}</h4>
-                <label>Review</label>
-                <p className="desc">{p.desc}</p>
-                <label>Rating</label>
-                <div className="stars">
-                 {Array(p.rating).fill( <StarIcon className="star" />)}
-                
+            {p._id === currentPlaceId && (
+              <Popup
+                longitude={p.long}
+                latitude={p.lat}
+                anchor="left"
+                closeButton={true}
+                closeOnClick={false}
+                onClose={() => setCurrentPlaceId(null)}
+              >
+                <div className="card">
+                  <label>Place</label>
+                  <h4 className="place">{p.title}</h4>
+                  <label>Review</label>
+                  <p className="desc">{p.desc}</p>
+                  <label>Rating</label>
+                  <div className="stars">
+                    {Array(p.rating).fill(<StarIcon className="star" />)}
+                  </div>
+                  <label>Information</label>
+                  <span className="username">Created by {p.username}</span>
+                  <span className="date">{format(p.createdAt)}</span>
                 </div>
-                <label>Information</label>
-                <span className="username">Created by {p.username}</span>
-                <span className="date">{format(p.createdAt)}</span>
-              </div>
-            </Popup>
-          )}
-        </>
-      ))}
-      {newPlace && (
-        <Popup
-          longitude={newPlace.long}
-          latitude={newPlace.lat}
-          anchor="left"
-          closeButton={true}
-          closeOnClick={false}
-          onClose={() => setNewPlace(null)}
-        >
-          <div>
-            <form onSubmit={handleSubmit}>
-              <label>Title</label>
-              <input placeholder="Where are you?" onChange={(e)=>setTitle(e.target.value)}></input>
-              <label>Review</label>
-              <textarea placeholder="How was it?" onChange={(e)=>setDesc(e.target.value)}></textarea>
-              <label>Rating</label>
-              <select onChange={(e)=>setRating(e.target.value)}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-              <button className="submitButton" type="submit">
-                Add Pin
-              </button>
-            </form>
+              </Popup>
+            )}
+          </>
+        ))}
+        {newPlace && (
+          <Popup
+            longitude={newPlace.long}
+            latitude={newPlace.lat}
+            anchor="left"
+            closeButton={true}
+            closeOnClick={false}
+            onClose={() => setNewPlace(null)}
+          >
+            <div>
+              <form onSubmit={handleSubmit}>
+                <label>Title</label>
+                <input
+                  placeholder="Where are you?"
+                  onChange={(e) => setTitle(e.target.value)}
+                ></input>
+                <label>Review</label>
+                <textarea
+                  placeholder="How was it?"
+                  onChange={(e) => setDesc(e.target.value)}
+                ></textarea>
+                <label>Rating</label>
+                <select onChange={(e) => setRating(e.target.value)}>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <button className="submitButton" type="submit">
+                  Add Pin
+                </button>
+              </form>
+            </div>
+          </Popup>
+        )}
+        {currentUser ? (
+          <button className="button logout">Log Out</button>
+        ) : (
+          <div className="buttons">
+            <button className="button login">Login</button>
+            <button className="button register">Register</button>
           </div>
-        </Popup>
-      )}
-    </Map>
+        )}
+      </Map>
+    </div>
   );
 };
 
