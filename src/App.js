@@ -5,6 +5,8 @@ import RoomIcon from "@mui/icons-material/Room";
 import "./app.css";
 import axios from "axios";
 import { format } from "timeago.js";
+import Signup from "./components/Signup";
+
 
 const RACT_APP_MAPBOX =
   "pk.eyJ1Ijoiam9yZGlyb2NhOTQiLCJhIjoiY2wwNnp0ZTZ1MDFpZTNrcDYzanhod2VnbSJ9.4qhWWAscO01UzSdinUba1Q";
@@ -20,7 +22,7 @@ const App = () => {
   const [desc, setDesc] = useState(null);
   const [rating, setRating] = useState(0);
 
-  const currentUser = "jordi";
+  const [currentUser,setCurrentUser] = useState(null)
 
   useEffect(() => {
     const getPins = async () => {
@@ -157,10 +159,11 @@ const App = () => {
           <button className="button logout">Log Out</button>
         ) : (
           <div className="buttons">
-            <button className="button login">Login</button>
-            <button className="button register">Register</button>
+            <button className="button login">Log In</button>
+            <button className="button register">Sign Up</button>
           </div>
         )}
+        <Signup/>
       </Map>
     </div>
   );
