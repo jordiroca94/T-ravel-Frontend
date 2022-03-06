@@ -6,7 +6,7 @@ import "./app.css";
 import axios from "axios";
 import { format } from "timeago.js";
 import Signup from "./components/Signup";
-
+import Login from "./components/Login"
 
 const RACT_APP_MAPBOX =
   "pk.eyJ1Ijoiam9yZGlyb2NhOTQiLCJhIjoiY2wwNnp0ZTZ1MDFpZTNrcDYzanhod2VnbSJ9.4qhWWAscO01UzSdinUba1Q";
@@ -22,7 +22,9 @@ const App = () => {
   const [desc, setDesc] = useState(null);
   const [rating, setRating] = useState(0);
 
-  const [currentUser,setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     const getPins = async () => {
@@ -159,11 +161,20 @@ const App = () => {
           <button className="button logout">Log Out</button>
         ) : (
           <div className="buttons">
-            <button className="button login">Log In</button>
-            <button className="button register">Sign Up</button>
+            <button className="button login" onClick={() => setShowLogin(true)}>
+              Log In
+            </button>
+            <button
+              className="button register"
+              onClick={() => setShowRegister(true)}
+            >
+              Sign Up
+            </button>
           </div>
         )}
-        <Signup/>
+        {showRegister && <Signup setShowRegister={setShowRegister} />}
+        {showLogin && <Login setShowLogin={setShowLogin} />}
+
       </Map>
     </div>
   );

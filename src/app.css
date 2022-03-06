@@ -73,6 +73,7 @@ textarea::placeholder {
 
 .login {
   background-color: teal;
+  margin-right:15px;
 }
 
 .register {
